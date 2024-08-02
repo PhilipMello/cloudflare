@@ -88,6 +88,20 @@ _dmarc.$sitename.	1	IN	TXT	v=DMARC1;p=quarantine;rua=mailto:admin@$sitename
 
 "
 
+# <-- Manual - BEGIN
+
+manual() {
+    echo -e ""
+    exit 0
+}
+
+if [[ $1 == "-h" || $1 == "--help" || "$1" == "--h" ]]; then
+    manual
+    exit 1
+fi
+
+# Manual - END -->
+
 cloudflareurl="https://dash.cloudflare.com/"
 
 # File
