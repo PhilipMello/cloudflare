@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+# Author
+author="Philip Mello <philipmello@live.com>"
+
+# Version
+version="0.1"
+
+# License
+license="MIT"
+
+# Date
+current_date=$(date +'%b %d, %Y')
+
+
+# Header
+header="#!/usr/bin/env bash
+# --------------------------------------------------------------
+# Script     : Script Creator
+# Description: Script to create DNS records for CloudFlare
+# Version    : $version
+# Date       : $current_date
+# Author     : $author
+# License    : $license
+# --------------------------------------------------------------
+# How to use: Type your site name in prompt to generate yoursite.txt records for CloudFlare
+# Exemples: 
+# --------------------------------------------------------------
+"
+
+# Read user prompt
+echo "Type your site name, (Ex: mysite.com)"
+read sitename
+
+# Read server IP address (IPv4)
+echo "Type your Server IP (IPv4)"
+read serverip
+
+# Read DKIM
+echo "Paste your DKIM here (Type ENTER to skip)"
+read dkim
+
+cloudflare="
+;;
+;; Domain:     $sitename.
+;; Created:   $current_date
+;;
+
+;; A Records
+$sitename.	1	IN	A	$serverip ; Root domain pointing to Server IPv4. (DNS Only)
+mail.$sitename.	1	IN	A	$serverip
+www.$sitename.	1	IN	A	$serverip ; WWW.Domain pointing to Server IPv4. (DNS Only)
+www.mail.$sitename.	1	IN	A	$serverip
+
+;; MX Records
+$sitename.	1	IN	MX	10 $sitename.
+
+;; PTR Records
+$serverip.$sitename.	1	IN	PTR	$sitename. ; rDNS
+
+;; TXT Records
+$sitename.	1	IN	TXT	"'"v=spf1 a mx -all"'"
+default._domainkey.$sitename.	1	IN	TXT	"'"'$dkim'"'"
+_dmarc.$sitename.	1	IN	TXT	"'"v=DMARC1;p=quarantine;rua=mailto:admin@'$sitename'"'"
+
+"
+
+cloudflareurl="https://dash.cloudflare.com/"
+
+# File
+file="$sitename.txt"
+echo "$cloudflare" > $file
+message="
+# --------------------------------------------------------------
+# DNS Records Created Succesfully for CloudFlare
+# File            :"$sitename.txt"
+# Date            :$current_date
+# DNS Provider    :CloudFlare
+# CloudFlare URL  :$cloudflareurl
+# --------------------------------------------------------------
+"
+echo "$message"
+
+exit 0
