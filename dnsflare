@@ -14,7 +14,7 @@ echo "
                   _   _                  
    |              | | | |                 
  __|   _  _    ,  | | | |  __,   ,_    _    # Script     : Cloudflare DNS Script Automation
-/  |  / |/ |  / \_|/  |/  /  |  /  |  |/    # Description: Create, Delete, Check, Fix. Azure AKS Cluster
+/  |  / |/ |  / \_|/  |/  /  |  /  |  |/    # Description: Create DNS entries for Cloudflare
 \_/|_/  |  |_/ \/ |__/|__/\_/|_/   |_/|__/  # Version    : $version
                   |\                        # Date       : $current_date
                   |/                        # Author     : $author
