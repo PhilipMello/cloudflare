@@ -1,36 +1,56 @@
 #!/usr/bin/env bash
-
 # Author
-author="Philip Mello <philipmello@live.com>"
-
+author="Philip Mello <@Microsoft>"
 # Version
-version="0.1"
-
+version="1.0"
 # License
 license="MIT"
-
 # Date
 current_date=$(date +'%b %d, %Y')
+# GitHub
+github='https://github.com/PhilipMello/cloudflare/'
 
-
-# Header
-header="#!/usr/bin/env bash
-# --------------------------------------------------------------
-# Script     : Script Creator
-# Description: Script to create DNS records for CloudFlare
-# Version    : $version
-# Date       : $current_date
-# Author     : $author
+echo "
+                  _   _                  
+   |              | | | |                 
+ __|   _  _    ,  | | | |  __,   ,_    _    # Script     : Cloudflare DNS Script Automation
+/  |  / |/ |  / \_|/  |/  /  |  /  |  |/    # Description: Create, Delete, Check, Fix. Azure AKS Cluster
+\_/|_/  |  |_/ \/ |__/|__/\_/|_/   |_/|__/  # Version    : $version
+                  |\                        # Date       : $current_date
+                  |/                        # Author     : $author
 # License    : $license
+# Github     : $github
 # --------------------------------------------------------------
-# How to use: Type your site name in prompt to generate yoursite.txt records for CloudFlare
-# Exemples: 
+# How to use: Execute ./dnsflare
+# Examples:
+# Manual: ./dnsflare -h OR ./dnsflare --h OR ./dnsflare --help
 # --------------------------------------------------------------
 "
+WHITE=""
+BLUE="\033[97;104m"
+YELLOW="\033[97;103m"
+CYAN="\033[97;106m"
+MAGENTA="\033[97;45m"
+GREEN="\033[97;102m"
+RED="\033[97;41m"
+ENDCOLOR="\e[0m"
 
-# Read user prompt
+# Read sitename
 echo "Type your site name, (Ex: mysite.com)"
 read sitename
+
+# Read Subdomain
+echo "Would you like to add Subdomain ? Enter (y, n)"
+read option
+
+if [[ $option == [Yy] ]]; then
+    echo "Enter your subdomain (Ex: dev)"
+    read subdomain
+elif [[ $option == [Nn] ]]; then
+    echo "No Sundomain added"
+else
+    echo "Invalid input."
+fi
 
 # Read server IP address (IPv4)
 echo "Type your Server IP (IPv4)"
@@ -52,6 +72,9 @@ mail.$sitename.	1	IN	A	$serverip
 www.$sitename.	1	IN	A	$serverip ; WWW.Domain pointing to Server IPv4. (DNS Only)
 www.mail.$sitename.	1	IN	A	$serverip
 
+;; CNAME Records
+$subdmain.	1	IN	CNAME	$sitename. ; Subdomain
+
 ;; MX Records
 $sitename.	1	IN	MX	10 $sitename.
 
@@ -59,9 +82,9 @@ $sitename.	1	IN	MX	10 $sitename.
 $serverip.$sitename.	1	IN	PTR	$sitename. ; rDNS
 
 ;; TXT Records
-$sitename.	1	IN	TXT	"'"v=spf1 a mx -all"'"
-default._domainkey.$sitename.	1	IN	TXT	"'"'$dkim'"'"
-_dmarc.$sitename.	1	IN	TXT	"'"v=DMARC1;p=quarantine;rua=mailto:admin@'$sitename'"'"
+$sitename.	1	IN	TXT	v=spf1 a mx -all
+default._domainkey.$sitename.	1	IN	TXT	$dkim "'ADD DKIM HERE'" ; DKIM record
+_dmarc.$sitename.	1	IN	TXT	v=DMARC1;p=quarantine;rua=mailto:admin@$sitename
 
 "
 
