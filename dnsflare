@@ -35,30 +35,67 @@ GREEN="\033[97;102m"
 RED="\033[97;41m"
 ENDCOLOR="\e[0m"
 
-# Read sitename
-echo "Type your site name, (Ex: mysite.com)"
-read sitename
 
-# Read Subdomain
-echo "Would you like to add Subdomain ? Enter (y, n)"
-read option
+# <--- FUNCTIONS - BEGIN
 
-if [[ $option == [Yy] ]]; then
-    echo "Enter your subdomain (Ex: dev)"
-    read subdomain
-elif [[ $option == [Nn] ]]; then
-    echo "No Sundomain added"
-else
-    echo "Invalid input."
+function cf_create_dns() {
+    # Read sitename
+    echo "Type your site name, (Ex: mysite.com)"
+    read sitename
+
+    # Read Subdomain
+    echo "Would you like to add Subdomain ? Enter (y, n)"
+    read option
+
+    if [[ $option == [Yy] ]]; then
+        echo "Enter your subdomain (Ex: dev)"
+        read subdomain
+    elif [[ $option == [Nn] ]]; then
+        echo "No Sundomain added"
+    else
+        echo "Invalid input."
+    fi
+
+    # Read server IP address (IPv4)
+    echo "Type your Server IP (IPv4)"
+    read serverip
+
+    # Read DKIM
+    echo "Paste your DKIM here (Type ENTER to skip)"
+    read dkim
+}
+
+# <--- FUNCTIONS END
+
+main_menu() {
+    echo "1. Create DNS entries for Cloudflare"
+    read option
+}
+
+# <-- Manual - BEGIN
+
+manual() {
+    echo -e "Cloudflare Docs: 'https://developers.cloudflare.com/'"
+    exit 0
+}
+
+if [[ $1 == "-h" || $1 == "--help" || "$1" == "--h" ]]; then
+    manual
+    exit 1
 fi
 
-# Read server IP address (IPv4)
-echo "Type your Server IP (IPv4)"
-read serverip
+# Manual - END -->
 
-# Read DKIM
-echo "Paste your DKIM here (Type ENTER to skip)"
-read dkim
+main_menu
+
+case $option in
+    1)
+        cf_create_dns
+        ;;
+    *)
+        echo "Invalid option"
+        ;;
+esac
 
 cloudflare="
 ;;
@@ -88,21 +125,7 @@ _dmarc.$sitename.	1	IN	TXT	v=DMARC1;p=quarantine;rua=mailto:admin@$sitename
 
 "
 
-# <-- Manual - BEGIN
-
-manual() {
-    echo -e ""
-    exit 0
-}
-
-if [[ $1 == "-h" || $1 == "--help" || "$1" == "--h" ]]; then
-    manual
-    exit 1
-fi
-
-# Manual - END -->
-
-cloudflareurl="https://dash.cloudflare.com/"
+cloudflareurl='https://dash.cloudflare.com/'
 
 # File
 file="$sitename.txt"
