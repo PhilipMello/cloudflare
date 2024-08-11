@@ -63,39 +63,6 @@ function cf_create_dns() {
     # Read DKIM
     echo "Paste your DKIM here (Type ENTER to skip)"
     read dkim
-}
-
-# <--- FUNCTIONS END
-
-main_menu() {
-    echo "1. Create DNS entries for Cloudflare"
-    read option
-}
-
-# <-- Manual - BEGIN
-
-manual() {
-    echo -e "Cloudflare Docs: 'https://developers.cloudflare.com/'"
-    exit 0
-}
-
-if [[ $1 == "-h" || $1 == "--help" || "$1" == "--h" ]]; then
-    manual
-    exit 1
-fi
-
-# Manual - END -->
-
-main_menu
-
-case $option in
-    1)
-        cf_create_dns
-        ;;
-    *)
-        echo "Invalid option"
-        ;;
-esac
 
 cloudflare="
 ;;
@@ -142,3 +109,84 @@ message="
 echo "$message"
 
 exit 0
+}
+
+function cf_create_wp_rules() {
+    # Create Wordpress rules for Cloudflare
+    echo -e "
+    +-------------------------------------------------------------------------+
+    |${MAGENTA}Create Wordpress rules for Cloudflare${ENDCOLOR}
+    +-------------------------------------------------------------------------+
+    "
+    echo "1. Create rule to block access to WP-ADMIN"
+    echo "2. Create rule to allow my IP to WP-ADMIN"
+    read option
+
+    case $option in
+        1)
+            echo "Enter your website"
+            read website
+
+            expression="(http.request.full_uri eq "https://$website/wp-login.php") 
+            or (http.request.uri.query eq 
+            "redirect_to=https%3A%2F%2F$website%2Fwp-admin%2F\&\reauth=1")"
+
+            echo -e "
+            +-------------------------------------------------------------------------+
+            |                   ${MAGENTA}$expression${ENDCOLOR}
+            +-------------------------------------------------------------------------+
+            "
+            ;;
+        2)
+            echo "Enter your website"
+            read website
+
+            expression="(http.request.uri.path eq "/wp-login.php")"
+
+            echo -e "
+            +-------------------------------------------------------------------------+
+            |                   ${MAGENTA}$expression${ENDCOLOR}
+            +-------------------------------------------------------------------------+
+            "
+            ;;
+        *)
+            echo "Invalid option"
+            ;;
+    esac
+}
+
+# <--- FUNCTIONS END
+
+# <-- Manual - BEGIN
+
+manual() {
+    echo -e "Cloudflare Docs: 'https://developers.cloudflare.com/'"
+    exit 0
+}
+
+if [[ $1 == "-h" || $1 == "--help" || "$1" == "--h" ]]; then
+    manual
+    exit 1
+fi
+
+# Manual - END -->
+
+main_menu() {
+    echo "1. Create DNS entries for Cloudflare"
+    echo "2. Create Wordpress rules for Cloudflare"
+    read option
+}
+
+main_menu
+
+case $option in
+    1)
+        cf_create_dns
+        ;;
+    2)
+        cf_create_wp_rules
+        ;;
+    *)
+        echo "Invalid option"
+        ;;
+esac
