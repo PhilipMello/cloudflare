@@ -51,6 +51,18 @@ Go to: Website > Security > WAF > Firewall rules
 |Expression   |(http.request.full_uri eq "https://SITE-HERE.com/wp-login.php") or (http.request.uri.query eq "redirect_to=https%3A%2F%2FSITE-HERE.com%2Fwp-admin%2F&reauth=1") |
 |Choose an action (Required)  |Block  |
 
+## Rate Limit
+### > Rate limiting rules
+Go to: Website > Security > WAF > Tools
+
+| Rate limiting rules | IP Access Rules |
+:---------:|:------:
+|Rule name (required)  |Rate-Limit-to-WP-LOGIN  |
+|Expression     |(http.request.uri.path eq "/wp-login.php") |
+|Requests (required) [3]|Period (required) [10 seconds]|
+|Choose action      |Block |
+|Place at |First|
+
 ## Allow Access for your iP to WP-ADMIN
 ### > Tools
 Go to: Website > Security > WAF > Tools
