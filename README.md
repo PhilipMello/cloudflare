@@ -15,6 +15,7 @@
 # 📚 Index
 🔖 [Downloading and Installing](#-downloading-and-installing)<br>
 🔖 [Navigating the tool](#-navigating-the-tool)<br>
+🔖 [WordPress Rules](#-wordpress-rules)<br>
 
 ---
 # 🔧 Downloading and Installing
@@ -28,3 +29,33 @@ wget https://raw.githubusercontent.com/PhilipMello/cloudflare/main/dnsflare && c
 ```
 
 ![Downloading and Installing](media/dnsflare.gif)
+
+---
+# 🔧 Navigating the tool
+
+![Navigating the tool](media/navigating-the-tool.gif)
+
+---
+
+# 📊 WordPress Rules
+
+## WAF
+
+### > Firewall Rules
+Go to: Website > Security > WAF > Firewall rules
+
+## Block All Access to WP-ADMIN
+| Firewall Rules | Expression |
+:---------:|:------:
+|Rule name (required)   |Block-All-Access-WP-ADMIN |
+|Expression   |(http.request.full_uri eq "https://SITE-HERE.com/wp-login.php") or (http.request.uri.query eq "redirect_to=https%3A%2F%2FSITE-HERE.com%2Fwp-admin%2F&reauth=1") |
+|Choose an action (Required)  |Block  |
+
+## Allow Access for your iP to WP-ADMIN
+### > Tools
+Go to: Website > Security > WAF > Tools
+
+| Tools | IP Access Rules |
+:---------:|:------:
+|Value   |YOUR-IPV4  |
+|Value      |YOUR-IPV6  |
