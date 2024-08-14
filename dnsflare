@@ -155,6 +155,19 @@ function cf_create_wp_rules() {
     esac
 }
 
+function cf_ip_list() {
+    echo -e "
+    +------------------------------------------------------+
+    |${MAGENTA}Cloudflare IPV4 and IPV6${ENDCOLOR}
+    |Cloudflare IP List: 'https://www.cloudflare.com/ips/'
+    +------------------------------------------------------+
+    "
+    echo "IPV4 'https://www.cloudflare.com/ips-v4/'"
+    curl https://www.cloudflare.com/ips-v4/; echo
+    echo "IPV6 'https://www.cloudflare.com/ips-v6/'"
+    curl https://www.cloudflare.com/ips-v6/; echo
+}
+
 # <--- FUNCTIONS END
 
 # <-- Manual - BEGIN
@@ -174,6 +187,7 @@ fi
 main_menu() {
     echo "1. Create DNS entries for Cloudflare"
     echo "2. Create Wordpress rules for Cloudflare"
+    echo "3. Show Cloudflare IP List"
     read option
 }
 
@@ -185,6 +199,9 @@ case $option in
         ;;
     2)
         cf_create_wp_rules
+        ;;
+    3)
+        cf_ip_list
         ;;
     *)
         echo "Invalid option"
